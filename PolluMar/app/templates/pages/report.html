@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Signaler une Pollution{% endblock %}
+
+{% block content %}
+<h2 class="text-center">Formulaire de Signalement</h2>
+
+<div style="display: flex; justify-content: center;">
+    <form id="reportForm" style="
+        width: 100%;
+        max-width: 600px;
+        background-color: #fdfdfd;
+        padding: 25px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    ">
+        <label for="name">Nom du déclarant :</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="pollutionType">Type de Pollution :</label>
+        <select id="pollutionType" name="pollution_type" required>
+            <option value="Plastiques">Plastiques</option>
+            <option value="Hydrocarbures">Hydrocarbures</option>
+            <option value="Déchets Chimiques">Déchets Chimiques</option>
+        </select>
+
+        <label for="description">Description :</label>
+        <textarea id="description" name="description" required></textarea>
+
+        <label for="location">Localisation :</label>
+        <input type="text" id="location" name="location" required>
+
+        <label for="quantity">Quantité :</label>
+        <input type="number" id="quantity" name="quantity" min="0" step="any" required>
+
+        <button type="button" id="evaluateButton">Évaluer la gravité</button>
+        <p id="severityResult" style="text-align: center; font-weight: bold;"></p>
+
+        <label for="responderName">Nom de la personne ressource :</label>
+        <input type="text" id="responderName" name="responder_name" required>
+
+        <label for="responderEmail">Email de la personne ressource :</label>
+        <input type="email" id="responderEmail" name="responder_email" required>
+
+        <button type="button" id="notifyButton">Envoyer Notification</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById("evaluateButton").addEventListener("click", function () {
+        const pollutionType = document.getElementById("pollutionType").value;
+        const quantity = document.getElementById("quantity").value;
+
+        if (!quantity) {
+            alert("Veuillez entrer la quantité avant d'évaluer.");
+            return;
+        }
+
+        fetch("/evaluate_severity", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ pollution_type: pollutionType, quantity: quantity })
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("severityResult").innerText = "Gravité : " + data.severity;
+            })
+            .catch(error => {
+                console.error("Erreur lors de l’évaluation :", error);
+            });
+    });
+
+    document.getElementById("notifyButton").addEventListener("click", function () {
+        const data = {
+            name: document.getElementById("name").value,
+            pollution_type: document.getElementById("pollutionType").value,
+            description: document.getElementById("description").value,
+            location: document.getElementById("location").value,
+            quantity: document.getElementById("quantity").value,
+            responder_name: document.getElementById("responderName").value,
+            responder_email: document.getElementById("responderEmail").value
+        };
+
+        for (let key in data) {
+            if (!data[key]) {
+                alert("Veuillez remplir tous les champs.");
+                return;
+            }
+        }
+
+        fetch("/send_notification", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(response => {
+                if (response.error) {
+                    alert("Erreur : " + response.error);
+                } else {
+                    alert(response.message);
+                    window.location.href = "/";
+                }
+            })
+            .catch(error => {
+                console.error("Erreur lors de l’envoi :", error);
+                alert("❌ Une erreur s’est produite lors de l’envoi.");
+            });
+    });
+</script>
+{% endblock %}
