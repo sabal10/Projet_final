@@ -1,9 +1,12 @@
-
 # app/__main__.py
-#from app.models.database import conn
-from app import create_app  # On importe l'application via la factory
 
-app = create_app()
+from flask import Flask
+from app.views.index_routes import index_bp
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+app = Flask(__name__)
+
+# Enregistrer la route de la page d'accueil
+app.register_blueprint(index_bp)
+
+if __name__ == '__main__':
+    app.run(debug=True)

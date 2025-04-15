@@ -3,18 +3,18 @@
 {% block title %}Accueil{% endblock %}
 
 {% block content %}
-<h2 class="text-center">Signalements en Cours</h2>
+<h2 class="text-center" style="margin-top: 20px; font-size: 28px;">🚨 Signalements en Cours</h2>
 
-<div style="display: flex; justify-content: center;">
+<div style="display: flex; justify-content: center; padding: 20px;">
     <div style="width: 100%; max-width: 1000px;">
-        <table>
+        <table class="styled-table">
             <thead>
                 <tr>
-                    <th>Assigné à</th>
-                    <th>Type</th>
-                    <th>Gravité</th>
-                    <th>Localisation</th>
-                    <th>Statut</th>
+                    <th>👤 Assigné à</th>
+                    <th>🌊 Type</th>
+                    <th>⚠️ Gravité</th>
+                    <th>📍 Localisation</th>
+                    <th>📌 Statut</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,21 +24,38 @@
                     <td>{{ report.pollution_type }}</td>
                     <td>
                         {% if 'Urgent' in report.severity %}
-                        <span class="badge urgent">Urgent</span>
+                        <span class="badge urgent">🔴 Urgent</span>
                         {% elif 'Modéré' in report.severity %}
-                        <span class="badge modere">Modéré</span>
+                        <span class="badge modere">🟠 Modéré</span>
                         {% elif 'Faible' in report.severity %}
-                        <span class="badge faible">Faible</span>
+                        <span class="badge faible">🟢 Faible</span>
                         {% else %}
                         {{ report.severity }}
                         {% endif %}
                     </td>
                     <td>{{ report.location }}</td>
-                    <td>{{ report.status }}</td>
+                    <td>
+                        {% if report.status == "En cours" %}
+                        🟠 {{ report.status }}
+                        {% elif report.status == "Assigné" %}
+                        🔵 {{ report.status }}
+                        {% elif report.status == "Nouveau" %}
+                        🟡 {{ report.status }}
+                        {% else %}
+                        {{ report.status }}
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        <div style="text-align: right; margin-top: 10px;">
+            <!-- Lien désactivé temporairement car la route n'existe pas encore -->
+            <span class="btn-voir-plus" style="background-color: gray; cursor: not-allowed;">🔍 Voir tous les
+                signalements</span>
+
+        </div>
     </div>
 </div>
 {% endblock %}
