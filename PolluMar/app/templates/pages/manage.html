@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Gérer les Signalements{% endblock %}
+
+{% block content %}
+<h2 style="text-align: center;">Signalements Assignés</h2>
+
+<div style="display: flex; justify-content: center;">
+    <div style="width: 100%; max-width: 1000px;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Assigné à</th>
+                    <th>Type de Pollution</th>
+                    <th>Description</th> <!--  Nouvelle colonne -->
+                    <th>Localisation</th>
+                    <th>Gravité</th>
+                    <th>Statut</th>
+                    <th>Commentaire</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports if report.status != 'Résolu' %}
+                <tr>
+                    <td>{{ report.responder_name }}</td>
+                    <td>{{ report.pollution_type }}</td>
+
+                    <!--  Description tronquée avec info-bulle -->
+                    <td title="{{ report.description }}">
+                        {{ report.description[:40] }}{% if report.description|length > 40 %}...{% endif %}
+                    </td>
+
+                    <td>{{ report.location }}</td>
+                    <td>
+                        {% if 'Urgent' in report.severity %}
+                        <span class="badge urgent">Urgent</span>
+                        {% elif 'Modéré' in report.severity %}
+                        <span class="badge modere">Modéré</span>
+                        {% elif 'Faible' in report.severity %}
+                        <span class="badge faible">Faible</span>
+                        {% else %}
+                        {{ report.severity }}
+                        {% endif %}
+                    </td>
+                    <td id="status-{{ report.id }}">{{ report.status }}</td>
+                    <td>
+                        <textarea id="comment-{{ report.id }}" rows="2" style="width: 180px;"
+                            placeholder="Remarque ou action..."></textarea>
+                    </td>
+                    <td>
+                        <button onclick="resolveReport({{ report.id }})">Corriger</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function resolveReport(reportId) {
+        const comment = document.getElementById(`comment-${reportId}`).value;
+
+        if (!comment.trim()) {
+            alert("Veuillez saisir un commentaire.");
+            return;
+        }
+
+        fetch(`/resolve/${reportId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ comment: comment })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(" Signalement résolu !");
+                    window.location.reload();
+                } else {
+                    alert(" " + data.error);
+                }
+            })
+            .catch(error => {
+                console.error(' Erreur :', error);
+                alert("Une erreur s’est produite lors de la résolution.");
+            });
+    }
+</script>
+{% endblock %}
