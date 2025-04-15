@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<h2 class="text-center">Signalements en Cours</h2>
+
+<div style="display: flex; justify-content: center;">
+    <div style="width: 100%; max-width: 1000px;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Assigné à</th>
+                    <th>Type</th>
+                    <th>Gravité</th>
+                    <th>Localisation</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports if report.status != 'Résolu' %}
+                <tr>
+                    <td>{{ report.responder_name }}</td>
+                    <td>{{ report.pollution_type }}</td>
+                    <td>
+                        {% if 'Urgent' in report.severity %}
+                        <span class="badge urgent">Urgent</span>
+                        {% elif 'Modéré' in report.severity %}
+                        <span class="badge modere">Modéré</span>
+                        {% elif 'Faible' in report.severity %}
+                        <span class="badge faible">Faible</span>
+                        {% else %}
+                        {{ report.severity }}
+                        {% endif %}
+                    </td>
+                    <td>{{ report.location }}</td>
+                    <td>{{ report.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
