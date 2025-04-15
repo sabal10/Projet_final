@@ -1,71 +1,26 @@
 {% extends "base.html" %}
 
-{% block title %}Tableau de Bord{% endblock %}
+{% block title %}Tableau de bord{% endblock %}
 
 {% block content %}
-<h2>Statistiques des Signalements</h2>
+<h2 class="text-center">Tableau de bord</h2>
 
-<!-- 📊 Cartes statistiques -->
-<div class="dashboard-cards">
-    <div class="stat-card">
-        <div class="stat-value">{{ total }}</div>
-        <div class="stat-label">Total de signalements</div>
+<p style="text-align: center;">
+    Cette page contient les statistiques globales, graphiques et indicateurs liés aux signalements de pollution.
+</p>
+
+<div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+    <div style="border: 1px solid #ccc; padding: 20px; border-radius: 10px; width: 200px; text-align: center;">
+        <h4>Total des signalements</h4>
+        <p><strong>{{ total }}</strong></p>
     </div>
-    <div class="stat-card">
-        <div class="stat-value">{{ resolution_rate }}%</div>
-        <div class="stat-label">Signalements résolus</div>
+    <div style="border: 1px solid #ccc; padding: 20px; border-radius: 10px; width: 200px; text-align: center;">
+        <h4>En cours</h4>
+        <p><strong>{{ en_cours }}</strong></p>
     </div>
-    <div class="stat-card">
-        <div class="stat-value">{{ urgents }}</div>
-        <div class="stat-label">Signalements urgents</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-value">{{ this_month }}</div>
-        <div class="stat-label">Signalements ce mois</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-value">{{ most_common }}</div>
-        <div class="stat-label">Type de Pollution le plus fréquent</div> <!-- 🔍 Texte attendu par le test -->
+    <div style="border: 1px solid #ccc; padding: 20px; border-radius: 10px; width: 200px; text-align: center;">
+        <h4>Résolus</h4>
+        <p><strong>{{ resolus }}</strong></p>
     </div>
 </div>
-
-<!-- 📈 Graphique en barres -->
-<h3>Quantité de signalements par type de pollution</h3> <!-- 🔍 Texte attendu par le test -->
-<canvas id="pollutionChart"></canvas>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const ctx = document.getElementById("pollutionChart").getContext("2d");
-        new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: {{ labels | tojson }},
-        datasets: [{
-            label: "Nombre de Signalements",
-            data: {{ values | tojson }},
-        backgroundColor: [
-            "rgba(255, 99, 132, 0.6)",
-            "rgba(54, 162, 235, 0.6)",
-            "rgba(255, 206, 86, 0.6)"
-        ],
-        borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(255, 206, 86, 1)"
-        ],
-        borderWidth: 1
-                }]
-            },
-        options: {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    }
-        });
-    });
-</script>
 {% endblock %}

@@ -1,17 +1,18 @@
-import os
 from flask import Flask
 
+# Importation des blueprints existants
+from app.views.index_routes import index_bp
+from app.views.about_routes import about_bp
+from app.views.manage_routes import manage_bp
+from app.views.report_routes import report_bp  # ✅ Ajouté pour la route /report
+
 def create_app():
-    base_dir = os.path.abspath(os.path.dirname(__file__))  # 📁 chemin absolu vers app/
-    template_dir = os.path.join(base_dir, "templates")
-    static_dir = os.path.join(base_dir, "static")
+    app = Flask(__name__)
 
-    app = Flask(
-        __name__,
-        template_folder=template_dir,
-        static_folder=static_dir
-    )
-  #  app.config.from_object("config.DevelopmentConfig")
-
+    # Enregistrement des blueprints
+    app.register_blueprint(index_bp)
+    app.register_blueprint(about_bp)
+    app.register_blueprint(manage_bp)
+    app.register_blueprint(report_bp)  # ✅ Enregistrement de la route /report
 
     return app

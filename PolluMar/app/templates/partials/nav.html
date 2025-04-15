@@ -1,12 +1,10 @@
 <nav style="background-color: #004466; padding: 10px;">
     <ul style="display: flex; justify-content: center; gap: 20px; list-style: none; margin: 0; padding: 0;">
-        <li><a href="{{ url_for('home.home') }}" style="color: white; text-decoration: none;">Accueil</a></li>
-
-        <!-- Liens désactivés en attendant les autres fonctionnalités -->
-        <li><span style="color: gray; text-decoration: none; cursor: not-allowed;">Signaler</span></li>
-        <li><span style="color: gray; text-decoration: none; cursor: not-allowed;">Gérer</span></li>
-        <li><span style="color: gray; text-decoration: none; cursor: not-allowed;">Historique</span></li>
-        <li><span style="color: gray; text-decoration: none; cursor: not-allowed;">Tableau de Bord</span></li>
-        <li><span style="color: gray; text-decoration: none; cursor: not-allowed;">À propos</span></li>
+        <li><a href="/" style="color: white; text-decoration: none;">Accueil</a></li>
+        <li><a href="/report" style="color: white; text-decoration: none;">Signaler</a></li>
+        <li><a href="/manage" style="color: white; text-decoration: none;">Gérer</a></li>
+        <li><a href="/history" style="color: white; text-decoration: none;">Historique</a></li>
+        <li><a href="/dashboard" style="color: white; text-decoration: none;">Tableau de Bord</a></li>
+        <li><a href="/about" style="color: white; text-decoration: none;">À propos</a></li>
     </ul>
 </nav>
