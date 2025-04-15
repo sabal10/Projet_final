@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Historique des Signalements{% endblock %}
+
+{% block content %}
+<div class="container wide">
+    <h2>Historique des Signalements</h2>
+
+    <!-- 🔍 Filtres dynamiques centrés -->
+    <div class="filter-container">
+        <div>
+            <label for="type">Type :</label>
+            <select id="type" onchange="applyFilters()">
+                <option value="">Tous</option>
+                <option value="Plastiques" {% if request.args.get('type')=='Plastiques' %}selected{% endif %}>Plastiques
+                </option>
+                <option value="Hydrocarbures" {% if request.args.get('type')=='Hydrocarbures' %}selected{% endif %}>
+                    Hydrocarbures</option>
+                <option value="Déchets Chimiques" {% if request.args.get('type')=='Déchets Chimiques' %}selected{% endif
+                    %}>Déchets Chimiques</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="status">Statut :</label>
+            <select id="status" onchange="applyFilters()">
+                <option value="">Tous</option>
+                <option value="En attente" {% if request.args.get('status')=='En attente' %}selected{% endif %}>En
+                    attente</option>
+                <option value="Résolu" {% if request.args.get('status')=='Résolu' %}selected{% endif %}>Résolu</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="severity">Gravité :</label>
+            <select id="severity" onchange="applyFilters()">
+                <option value="">Toutes</option>
+                <option value="Faible" {% if request.args.get('severity')=='Faible' %}selected{% endif %}>Faible
+                </option>
+                <option value="Modéré" {% if request.args.get('severity')=='Modéré' %}selected{% endif %}>Modéré
+                </option>
+                <option value="Urgent" {% if request.args.get('severity')=='Urgent' %}selected{% endif %}>Urgent
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <!-- 📋 Table des signalements -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Déclarant</th>
+                    <th>Assigné à</th>
+                    <th>Type</th>
+                    <th>Gravité</th>
+                    <th>Localisation</th>
+                    <th>Statut</th>
+                    <th>Date Création</th>
+                    <th>Date Résolution</th>
+                    <th>Commentaire / Action corrective</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                <tr>
+                    <td>{{ report.name }}</td>
+                    <td>{{ report.responder_name }}</td>
+                    <td>{{ report.pollution_type }}</td>
+                    <td>
+                        {% if 'Urgent' in report.severity %}
+                        <span class="badge urgent">Urgent</span>
+                        {% elif 'Modéré' in report.severity %}
+                        <span class="badge modere">Modéré</span>
+                        {% elif 'Faible' in report.severity %}
+                        <span class="badge faible">Faible</span>
+                        {% else %}
+                        {{ report.severity }}
+                        {% endif %}
+                    </td>
+                    <td>{{ report.location }}</td>
+                    <td>{{ report.status }}</td>
+                    <td>{{ report.created_at }}</td>
+                    <td>{{ report.resolved_at or '-' }}</td>
+                    <td>{{ report.comment or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function applyFilters() {
+        const type = document.getElementById("type").value;
+        const status = document.getElementById("status").value;
+        const severity = document.getElementById("severity").value;
+
+        const params = new URLSearchParams();
+        if (type) params.append("type", type);
+        if (status) params.append("status", status);
+        if (severity) params.append("severity", severity);
+
+        window.location.href = `/history?${params.toString()}`;
+    }
+</script>
+{% endblock %}
