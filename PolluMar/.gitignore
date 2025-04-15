@@ -1,0 +1,27 @@
+# ✅ Environnement virtuel
+.venv/
+venv/
+
+# ✅ Caches de test pytest
+.pytest_cache/
+
+# ✅ Dossiers de compilation Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# ✅ Fichiers de base de données SQLite
+*.db
+
+# ✅ Fichiers de configuration d'IDE
+.vscode/
+.idea/
+
+# ✅ Fichiers de logs
+*.log
+
+# ✅ Sauvegardes temporaires
+*~
+*.swp
+.DS_Store
+Thumbs.db
