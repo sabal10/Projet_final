@@ -1,0 +1,201 @@
+/* --- GLOBAL --- */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+/* --- MAIN CONTENT AREA --- */
+main.container {
+    flex: 1;
+    padding: 20px;
+    max-width: 1000px;
+    margin: 30px auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+main.container.wide {
+    max-width: 100%;
+    padding: 20px 40px;
+}
+
+/* --- HEADER --- */
+header {
+    background-color: #007BFF;
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+}
+
+/* --- NAVIGATION --- */
+nav {
+    margin-top: 10px;
+    text-align: center;
+}
+
+nav a {
+    margin: 0 15px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* --- TITRES --- */
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* --- TABLES --- */
+.table-container {
+    overflow-x: auto;
+    max-width: 100%;
+    padding-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    table-layout: auto;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.92em;
+}
+
+th,
+td {
+    border: 1px solid #ccc;
+    padding: 10px 8px;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 200px;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-size: 0.88em;
+}
+
+/* --- FORMULAIRES --- */
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* --- BOUTONS --- */
+button {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* ✅ FOOTER --- */
+footer {
+    background-color: #1e2a38;
+    text-align: center;
+    padding: 15px;
+    font-size: 0.9em;
+    width: 100%;
+    color: #ffffff;
+    border-top: 1px solid #0d1720;
+}
+
+/* --- BADGES DE GRAVITÉ --- */
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+.badge.urgent {
+    background-color: #dc3545;
+}
+
+.badge.modere {
+    background-color: #fd7e14;
+}
+
+.badge.faible {
+    background-color: #28a745;
+}
+
+/* --- FILTRES CENTRÉS --- */
+.filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.filter-container div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --- CARTES STATISTIQUES (DASHBOARD) --- */
+.dashboard-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background-color: #ffffff;
+    border-left: 6px solid #007BFF;
+    padding: 15px 20px;
+    min-width: 180px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: scale(1.05);
+}
+
+.stat-value {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #007BFF;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: #555;
+    margin-top: 5px;
+}
