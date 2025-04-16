@@ -1,4 +1,4 @@
-# Fichier : app/views/report_routes.py
+# 📁 Fichier : app/views/report_routes.py
 
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for
 from datetime import datetime
@@ -22,6 +22,14 @@ def report():
     # 🔁 Ajout de la date de création générée dynamiquement (sécurité backend)
     form_data["created_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    # ✅ Évaluation de la gravité via Strategy Pattern
+    evaluator = SeverityEvaluator()
+    form_data["severity"] = evaluator.evaluate(
+        form_data["pollution_type"],
+        float(form_data["quantity"])
+    )
+
+    # ✅ Insertion et notification
     service = NotificationService()
     service.send(form_data)
 

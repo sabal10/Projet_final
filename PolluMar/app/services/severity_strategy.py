@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 
-# 🎯 Interface du pattern Strategy
+#  Interface du pattern Strategy
 # Cette classe abstraite définit le contrat que toutes les stratégies concrètes doivent respecter.
 class SeverityStrategy(ABC):
     @abstractmethod
@@ -14,7 +14,7 @@ class SeverityStrategy(ABC):
         pass
 
 
-# 🎯 Stratégie concrète pour les plastiques
+#  Stratégie concrète pour les plastiques
 class PlasticSeverityStrategy(SeverityStrategy):
     def evaluate(self, quantity: float) -> str:
         if quantity > 50:
@@ -24,7 +24,7 @@ class PlasticSeverityStrategy(SeverityStrategy):
         return "Faible"
 
 
-# 🎯 Stratégie concrète pour les hydrocarbures
+#  Stratégie concrète pour les hydrocarbures
 class HydrocarbonSeverityStrategy(SeverityStrategy):
     def evaluate(self, quantity: float) -> str:
         if quantity > 20:
@@ -34,7 +34,7 @@ class HydrocarbonSeverityStrategy(SeverityStrategy):
         return "Faible"
 
 
-# 🎯 Stratégie concrète pour les déchets chimiques
+#  Stratégie concrète pour les déchets chimiques
 class ChemicalSeverityStrategy(SeverityStrategy):
     def evaluate(self, quantity: float) -> str:
         if quantity > 500:
