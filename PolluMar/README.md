@@ -11,6 +11,11 @@ PolluMar est une application Web de signalement et de suivi des incidents de pol
 -  Tests unitaires, d'intégration et end-to-end
 -  Application de plusieurs patrons de conception (en cours)
 
+## Lancement de l'application 
+```bash
+cd Projet_final/PolluMar
+python -m app
+
 ##  Architecture
 
 L'application suit une architecture **MVC en couches** :
