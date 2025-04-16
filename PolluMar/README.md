@@ -41,7 +41,7 @@ Classes :
 - ConsoleNotificationAdapter, EmailNotificationAdapter, SMSNotificationAdapter
 - NotificationAdapterFactory : fabrique d’adaptateurs
 - NotificationService : utilise un adaptateur injecté
-Lien : Diagramme UML : ![Diagramme Factory](./uml_patterns/factory_method.png)
+Lien : Diagramme UML : ![Diagramme Factory Method](./uml_patterns/factory_method.png)
 
 ## 🧪 Tests réalisés
 
