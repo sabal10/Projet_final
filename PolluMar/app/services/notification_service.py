@@ -1,6 +1,7 @@
-# Fichier : app/services/notification_service.py
+# ✅ Fichier : app/services/notification_service.py
 
 from app.models.database import Database
+from app.services.notification_factory import NotificationAdapterFactory  # ✅ Import de la factory
 
 class NotificationService:
     """
@@ -8,8 +9,12 @@ class NotificationService:
     - Vérifier les données du signalement
     - Détecter les doublons récents
     - Insérer le signalement dans la base
-    - Simuler l'envoi de la notification (console)
+    - Déléguer l'envoi via un adaptateur de notification (pattern Factory Method)
     """
+
+    def __init__(self, channel="console"):
+        # ✅ Instanciation dynamique de l'adaptateur via la factory
+        self.adapter = NotificationAdapterFactory.create_adapter(channel)
 
     def send(self, data):
         # ✅ Champs obligatoires requis
@@ -67,13 +72,5 @@ class NotificationService:
             data["created_at"]
         ))
 
-        # ✅ Simulation d'une notification (console)
-        print("\n📢 Notification envoyée avec succès ! Détails :")
-        print(f"- Déclarant : {data['name']}")
-        print(f"- Type : {data['pollution_type']}")
-        print(f"- Description : {data['description']}")
-        print(f"- Lieu : {data['location']}")
-        print(f"- Quantité : {data['quantity']}")
-        print(f"- Gravité : {severity}")
-        print(f"- À : {data['responder_name']} ({data['responder_email']})")
-        print(f"- Date de création : {data['created_at']}\n")
+        # ✅ Utilisation de l'adaptateur (dynamique via factory)
+        self.adapter.send(data)
