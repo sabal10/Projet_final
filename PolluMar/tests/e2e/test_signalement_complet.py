@@ -2,10 +2,9 @@ import sys
 import os
 import pytest
 from unittest.mock import patch
+from datetime import datetime
 
-# 📦 Ajoute le chemin racine du projet
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
-
 from app import create_app
 
 @pytest.fixture
@@ -16,9 +15,8 @@ def client():
         yield client
 
 @patch("app.views.report_routes.NotificationService.send")
-@patch("app.views.report_routes.Database.execute_query")
-def test_signalement_complet_e2e(mock_execute, mock_send, client):
-    # 1️⃣ Évaluation de la gravité
+def test_signalement_complet_e2e(mock_send, client):
+    # 1️⃣ Gravité
     data_eval = {
         "pollution_type": "Déchets Chimiques",
         "quantity": 150.0
@@ -29,7 +27,7 @@ def test_signalement_complet_e2e(mock_execute, mock_send, client):
     severity = response_eval.get_json().get("severity")
     assert severity in ["Faible", "Modéré", "Urgent"]
 
-    # 2️⃣ Notification après évaluation
+    # 2️⃣ Signalement
     data_signalement = {
         "name": "Michel Expert",
         "pollution_type": data_eval["pollution_type"],
@@ -37,7 +35,8 @@ def test_signalement_complet_e2e(mock_execute, mock_send, client):
         "location": "Site Industriel Z3",
         "quantity": data_eval["quantity"],
         "responder_name": "Surveillant Régional",
-        "responder_email": "surveillance@region.ca"
+        "responder_email": "surveillance@region.ca",
+        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
     response_notify = client.post("/send_notification", json=data_signalement)
@@ -47,6 +46,5 @@ def test_signalement_complet_e2e(mock_execute, mock_send, client):
     assert "message" in json_data
     assert "notification envoyée" in json_data["message"]
 
-    # ✅ Vérifie que la notification a été appelée
+    # ✅ Vérification que le service a bien été appelé
     assert mock_send.called
-    assert mock_execute.called

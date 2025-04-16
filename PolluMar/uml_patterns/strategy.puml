@@ -1,0 +1,40 @@
+@startuml
+title Design Pattern Strategy - Évaluation de la gravité
+
+' Interface commune
+interface SeverityStrategy {
+    +evaluate(quantity: float): str
+}
+
+' Stratégies concrètes
+class PlasticSeverityStrategy implements SeverityStrategy {
+    +evaluate(quantity: float): str
+}
+
+class HydrocarbonSeverityStrategy implements SeverityStrategy {
+    +evaluate(quantity: float): str
+}
+
+class ChemicalSeverityStrategy implements SeverityStrategy {
+    +evaluate(quantity: float): str
+}
+
+' Factory pour sélectionner la stratégie
+class SeverityStrategyFactory {
+    +get_strategy(pollution_type: str): SeverityStrategy
+}
+
+' Contexte (utilisateur de la stratégie)
+class SeverityEvaluator {
+    +evaluate(pollution_type: str, quantity: float): str
+}
+
+' Relations
+SeverityEvaluator --> SeverityStrategyFactory
+SeverityStrategyFactory --> SeverityStrategy
+
+SeverityStrategy <|.. PlasticSeverityStrategy
+SeverityStrategy <|.. HydrocarbonSeverityStrategy
+SeverityStrategy <|.. ChemicalSeverityStrategy
+
+@enduml

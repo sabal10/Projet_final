@@ -1,73 +1,70 @@
+# Fichier : app/views/report_routes.py
+
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for
+from datetime import datetime
 from app.models.database import Database
 from app.services.notification_service import NotificationService
 from app.services.severity_evaluator import SeverityEvaluator
 
 report_bp = Blueprint("report", __name__)
 
-# ✅ Route GET : affichage du formulaire de signalement
+# ✅ Route GET : affichage du formulaire de signalement (interface utilisateur)
 @report_bp.route("/report")
 def show_report():
     return render_template("pages/report.html")
 
-# ✅ Route POST : traitement du formulaire (utilisée dans les tests)
+
+# ✅ Route POST (formulaire HTML) : signalement manuel via le formulaire
 @report_bp.route("/report", methods=["POST"])
 def report():
     form_data = request.form.to_dict()
+
+    # 🔁 Ajout de la date de création générée dynamiquement (sécurité backend)
+    form_data["created_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     service = NotificationService()
     service.send(form_data)
+
     return redirect(url_for("report.show_report"))
 
-# ✅ Route POST : évaluation de la gravité via JSON
+
+# ✅ Route POST (JSON) : évaluation dynamique de la gravité (AJAX)
 @report_bp.route("/evaluate_severity", methods=["POST"])
 def evaluate_severity():
     data = request.get_json()
+
     pollution_type = data.get("pollution_type")
     quantity = float(data.get("quantity"))
 
     evaluator = SeverityEvaluator()
     severity = evaluator.evaluate(pollution_type, quantity)
+
     return jsonify({"severity": severity})
 
-# ✅ Route POST : enregistrement + notification (JSON, utilisé par JS)
+
+# ✅ Route POST (JSON) : signalement via JavaScript (AJAX)
 @report_bp.route("/send_notification", methods=["POST"])
 def send_notification():
     data = request.get_json()
     print("📨 Données reçues :", data)
 
-    db = Database()
-
     try:
-        # Évaluer la gravité
+        # 🔁 Ajout dynamique de la date côté serveur
+        data["created_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # 🧠 Calcul de la gravité via Strategy Pattern
         evaluator = SeverityEvaluator()
-        severity = evaluator.evaluate(data["pollution_type"], float(data["quantity"]))
-
-        # Insérer dans la base de données
-        query = """
-        INSERT INTO reports (
-            name, pollution_type, description, location, quantity, 
-            responder_name, responder_email, severity, status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """
-        params = (
-            data["name"],
+        data["severity"] = evaluator.evaluate(
             data["pollution_type"],
-            data["description"],
-            data["location"],
-            data["quantity"],
-            data["responder_name"],
-            data["responder_email"],
-            severity,
-            "En attente"
+            float(data["quantity"])
         )
-        db.execute_query(query, params)
 
-        # Envoyer la notification
+        # ✅ Insertion et notification centralisée via le service
         service = NotificationService()
         service.send(data)
 
         return jsonify({"message": "✅ Signalement enregistré et notification envoyée."})
-    
+
     except Exception as e:
         print("❌ Erreur :", str(e))
         return jsonify({"error": str(e)}), 500

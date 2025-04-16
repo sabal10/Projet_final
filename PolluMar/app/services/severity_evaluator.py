@@ -1,28 +1,17 @@
+# Fichier : app/services/severity_evaluator.py
+
+from app.services.severity_strategy_factory import SeverityStrategyFactory
+
+# 🎯 Cette classe utilise le design pattern Strategy via une factory
+# Elle ne contient plus de logique métier spécifique → elle délègue à la bonne stratégie
 class SeverityEvaluator:
     def evaluate(self, pollution_type: str, quantity: float) -> str:
-        if pollution_type == "Plastiques":
-            if quantity > 50:
-                return "Urgent"
-            elif quantity >= 10:
-                return "Modéré"
-            else:
-                return "Faible"
+        # On obtient la stratégie correspondante via la factory
+        strategy = SeverityStrategyFactory.get_strategy(pollution_type)
 
-        elif pollution_type == "Hydrocarbures":
-            if quantity > 20:
-                return "Urgent"
-            elif quantity >= 5:
-                return "Modéré"
-            else:
-                return "Faible"
-
-        elif pollution_type == "Déchets Chimiques":
-            if quantity > 500:
-                return "Urgent"
-            elif quantity >= 100:
-                return "Modéré"
-            else:
-                return "Faible"
-
-        else:
+        # Si aucun type connu, on retourne "Inconnue"
+        if strategy is None:
             return "Inconnue"
+
+        # Sinon, on utilise la stratégie sélectionnée
+        return strategy.evaluate(quantity)
