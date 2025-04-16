@@ -1,84 +1,110 @@
-##  PolluMar – Application de Signalement de Pollution Maritime
+# 🐳 PolluMar – Application de Signalement de Pollution Maritime
 
-PolluMar est une application Web de signalement et de suivi des incidents de pollution maritime, développée dans le cadre du cours IFT785 à l'Université de Sherbrooke.
+PolluMar est une application Web permettant de signaler, évaluer et suivre les incidents de pollution maritime. Ce projet a été développé dans le cadre du cours **IFT785 - Approches orientées objets** à l’Université de Sherbrooke.
 
-##  Fonctionnalités principales
+---
 
--  Soumission de signalements via formulaire 
--  Évaluation automatique de la gravité d’un incident
--  Notification simulée lors du dépôt d’un signalement
--  Historique et statut des signalements (en attente, résolu)
--  Tests unitaires, d'intégration et end-to-end
--  Application de plusieurs patrons de conception (en cours)
+## 🌊 Fonctionnalités principales
 
-## Lancement de l'application 
+- 📝 Soumission de signalements via formulaire
+- 🧠 Évaluation automatique de la gravité d’un incident
+- 📬 Notification simulée via console, email ou journal
+- 📾 Historique et statut des signalements (en attente, résolu)
+- 🤪 Tests : unitaires, d’intégration, end-to-end
+- 🧹 Intégration de plusieurs **patrons de conception (Design Patterns)**
+
+---
+
+## 🚀 Lancement de l’application
+
 ```bash
 cd Projet_final/PolluMar
 python -m app
+```
 
-##  Architecture
+---
 
-L'application suit une architecture **MVC en couches** :
+## 🧱 Architecture du projet
 
-- models/ : base de données, entités
-- services/ : logique métier, stratégies
-- views/ : routes Flask, interface utilisateur
-- templates/ : HTML Jinja2 avec partials
-- tests/ : tests organisés en `unitaires`, `intégration`, `e2e`
-- uml_patterns/ : diagrammes UML des patrons appliqués
+L’application suit une architecture **MVC modulaire** :
 
-##  Design Patterns utilisés
+```
+📆 app/
+ ├📂models/                 # Base de données et entités
+ ├📂services/               # Logique métier, stratégie, états, observateurs
+ ├📂views/                  # Routes Flask
+ ├📂templates/              # Fichiers HTML avec Jinja2
+ └📂tests/                  # Séparés en unitaires, intégration, e2e
+```
 
-# 1. Strategy Pattern – Gravité de Pollution
+---
 
-- Permet d'évaluer dynamiquement la gravité selon le type de pollution. Ajout de nouveaux comportements sans modifier l'évaluateur.
-- Implémenté dans :
-  - SeverityStrategy (interface)
-  - PlasticSeverityStrategy, HydrocarbonSeverityStrategy, ChemicalSeverityStrategy
-  - SeverityStrategyFactory : sélection dynamique
-  - SeverityEvaluator : contexte
-📌 Lien : Diagramme UML : ![Diagramme Strategy](./uml_patterns/strategy.png)
+## 🎯 Patrons de conception utilisés
 
-## 2. Factory Method 
-Permet de créer dynamiquement un adaptateur de notification selon le canal (console, email, sms)
-Classes :
-- NotificationAdapter (interface)
-- ConsoleNotificationAdapter, EmailNotificationAdapter, SMSNotificationAdapter
-- NotificationAdapterFactory : fabrique d’adaptateurs
-- NotificationService : utilise un adaptateur injecté
-Lien : Diagramme UML : ![Diagramme Factory Method](./uml_patterns/factory_method.png)
+### 1. 🎯 Strategy Pattern – Gravité de Pollution
 
-## 🧪 Tests réalisés
+- ⚙️ Permet d'évaluer dynamiquement la gravité d’un incident selon son type.
+- 🧹 Classes :
+  - `SeverityStrategy` (interface)
+  - `PlasticSeverityStrategy`, `HydrocarbonSeverityStrategy`, `ChemicalSeverityStrategy`
+  - `SeverityStrategyFactory`, `SeverityEvaluator`
+- 📌 ![Diagramme Strategy](./uml_patterns/strategy.png)
 
-- ✅ **Tests unitaires** : `SeverityEvaluator`, `NotificationService`
-- ✅ **Tests d'intégration** : Routes `/report`, `/send_notification`, `/evaluate_severity`, `/resolve`
-- ✅ **Tests end-to-end** : Signalement complet, du formulaire à la base de données
-- 🎯 Couverture actuelle : **60%** (objectif 70%+ avec les prochains patterns)
+---
 
-##  Technologies utilisées
+### 2. 🏣 Factory Method – Notification adaptable
 
-- Python 3.11
-- Flask
+- 📨 Permet de choisir dynamiquement un adaptateur selon le type de notification.
+- 🧹 Classes :
+  - `NotificationAdapter` (interface)
+  - `ConsoleNotificationAdapter`, `EmailNotificationAdapter`, `SMSNotificationAdapter`
+  - `NotificationAdapterFactory`, `NotificationService`
+- 📌 ![Diagramme Factory](./uml_patterns/factory_method.png)
+
+---
+
+### 3. 🔔 Observer Pattern – Notification multiple
+
+- 📣 Notifie automatiquement plusieurs observateurs quand un signalement est modifié.
+- 🧹 Observateurs concrets : `ConsoleObserver`, `EmailObserver`, `AuditObserver`
+- 🧹 Sujet concret : `PollutionReportSubject`
+- 🧹 Interfaces : `Observer`, `Subject`
+- 🧹 Composant de regroupement : `IncidentObservers`
+- 📌 ![Diagramme Observer](./uml_patterns/ObserverPattern.png)
+
+---
+
+### 4. 🔄 State Pattern – État dynamique d’un signalement
+
+- 🔁 Permet à un signalement de changer dynamiquement de comportement en fonction de son état.
+- 🧹 États : `EnAttenteState`, `ResoluState`
+- 🧹 Contexte : `Signalement`, `ReportContext`
+- 📌 ![Diagramme State](./uml_patterns/state_pattern.png)
+
+---
+
+## 🤪 Couverture des tests
+
+| Type de test       | Couverture | Exemples |
+|--------------------|------------|----------|
+| ✅ Unitaire         | ✅ 100% pour les State, Strategy, Observer |
+| ✅ Intégration      | ✅ Routes + Factory + Observers |
+| ✅ End-to-End (E2E) | ✅ Scénarios complets (AJAX → DB → Notification) |
+| 📊 Couverture globale | **64 %**  |
+
+---
+
+## 🛠️ Technologies utilisées
+
+- Python 3.11, Flask
 - SQLite
-- Pytest (+ coverage)
-- PlantUML (UML)
-- Git + GitHub (flow `develop` / `feature/*`)
+- Jinja2 (templates)
+- Pytest + Coverage
+- Git + GitHub (workflow GitFlow)
+- PlantUML pour les diagrammes UML
 
-## Tests
-- ✅ **Tests unitaires** :  
-  - Évaluateur de gravité (`SeverityEvaluator`)  
-  - Stratégies concrètes (`Plastic`, `Hydrocarbures`, `Déchets Chimiques`)  
-  - Adaptateurs de notification (`Console`, `Email`, `SMS`)  
-  - Fabrique d’adaptateurs (`NotificationAdapterFactory`)  
-  - Service de notification (`NotificationService`)  
+---
 
-- ✅ **Tests d’intégration** :  
-  - Routes `/report`, `/send_notification`, `/evaluate_severity`, `/resolve`  
-  - Intégration complète des adaptateurs avec injection dynamique (Factory Method)
+## 📚 Auteurs
 
-- ✅ **Tests end-to-end (E2E)** :  
-  - Scénario complet de signalement via AJAX : évaluation → notification → insertion DB
-
-- 📈 **Couverture de code actuelle** : **66 %**  
-  
-
+- **Sabala Herman** – Université de Sherbrooke – IFT785
