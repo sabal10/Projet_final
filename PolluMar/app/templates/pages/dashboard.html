@@ -9,6 +9,7 @@
     Cette page contient les statistiques globales, graphiques et indicateurs liés aux signalements de pollution.
 </p>
 
+<!-- 🧮 Indicateurs -->
 <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
     <div style="border: 1px solid #ccc; padding: 20px; border-radius: 10px; width: 200px; text-align: center;">
         <h4>Total des signalements</h4>
@@ -23,4 +24,62 @@
         <p><strong>{{ resolus }}</strong></p>
     </div>
 </div>
+
+<!-- 📊 Graphiques -->
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; padding: 40px 20px;">
+    <div style="width: 400px;">
+        <h4 class="text-center">Répartition des types de pollution</h4>
+        <canvas id="pollutionPieChart"></canvas>
+    </div>
+    <div style="width: 400px;">
+        <h4 class="text-center">Nombre de signalements par type</h4>
+        <canvas id="pollutionBarChart"></canvas>
+    </div>
+</div>
+
+<!-- 📦 Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = {{ labels | tojson }};
+    const values = {{ values | tojson }};
+
+    // 📊 Pie Chart
+    new Chart(document.getElementById("pollutionPieChart"), {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Répartition",
+                data: values,
+                borderWidth: 1
+            }]
+        }
+    });
+
+    // 📈 Bar Chart
+    new Chart(document.getElementById("pollutionBarChart"), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Nombre de signalements",
+                data: values,
+                backgroundColor: "rgba(54, 162, 235, 0.6)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+</script>
+
 {% endblock %}

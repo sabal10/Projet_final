@@ -13,9 +13,18 @@ def show_dashboard():
     en_cours = db.execute_query("SELECT COUNT(*) FROM reports WHERE status != 'Résolu'")[0][0]
     resolus = db.execute_query("SELECT COUNT(*) FROM reports WHERE status = 'Résolu'")[0][0]
 
+    # 📊 Données pour les graphiques
+    rows = db.execute_query("SELECT pollution_type FROM reports")
+    pollution_types = [row[0] for row in rows]
+
+    labels = ["Plastiques", "Hydrocarbures", "Déchets Chimiques"]
+    values = [pollution_types.count(label) for label in labels]
+
     return render_template(
         "pages/dashboard.html",
         total=total,
         en_cours=en_cours,
-        resolus=resolus
+        resolus=resolus,
+        labels=labels,
+        values=values
     )
