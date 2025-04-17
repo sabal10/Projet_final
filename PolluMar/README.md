@@ -128,7 +128,7 @@ L’application suit une architecture **MVC modulaire** :
 | ✅ Unitaire         | ✅ 100% pour les State, Strategy, Observer |
 | ✅ Intégration      | ✅ Routes + Factory + Observers |
 | ✅ End-to-End (E2E) | ✅ Scénarios complets (AJAX → DB → Notification) |
-| 📊 Couverture globale | **65 %**  |
+| 📊 Couverture globale | **76 %**  |
 
 ---
 
