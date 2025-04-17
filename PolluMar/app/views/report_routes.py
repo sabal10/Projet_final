@@ -1,4 +1,4 @@
-# 📁 Fichier : app/views/report_routes.py
+# 📁 app/views/report_routes.py
 
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for
 from datetime import datetime
@@ -14,33 +14,46 @@ def show_report():
     return render_template("pages/report.html")
 
 
-# ✅ Route POST (formulaire HTML) : signalement manuel via le formulaire
+# ✅ Route POST : signalement manuel via formulaire HTML ou appel JSON (ex: test ou AJAX)
 @report_bp.route("/report", methods=["POST"])
 def report():
-    form_data = request.form.to_dict()
+    """
+    Traite un nouveau signalement soumis soit via le formulaire HTML, soit via une requête JSON.
+    Évalue la gravité, insère les données, et déclenche la notification.
+    """
+    # 🔄 Compatibilité HTML (formulaire) ou JSON (test / JS)
+    if request.is_json:
+        form_data = request.get_json()
+    else:
+        form_data = request.form.to_dict()
 
-    # 🔁 Ajout de la date de création générée dynamiquement (sécurité backend)
+    # 🕒 Date d'enregistrement sécurisée côté serveur
     form_data["created_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # ✅ Évaluation de la gravité via Strategy Pattern
+    # 🔍 Gravité évaluée dynamiquement avec le pattern Strategy
     evaluator = SeverityEvaluator()
     form_data["severity"] = evaluator.evaluate(
         form_data["pollution_type"],
         float(form_data["quantity"])
     )
 
-    # ✅ Insertion et notification
-    service = NotificationService()
+    # 📡 Notification envoyée via NotificationService (Factory + Adapter)
+    service = NotificationService(channel=form_data.get("channel", "console"))
     service.send(form_data)
 
+    # 🔁 Retour JSON pour AJAX ou redirection HTML classique
+    if request.is_json:
+        return jsonify({"message": "Notification envoyée"})
     return redirect(url_for("report.show_report"))
 
 
-# ✅ Route POST (JSON) : évaluation dynamique de la gravité (AJAX)
+# ✅ Route POST : API pour évaluer dynamiquement la gravité (AJAX uniquement)
 @report_bp.route("/evaluate_severity", methods=["POST"])
 def evaluate_severity():
+    """
+    Évalue dynamiquement la gravité selon le type et la quantité (utilisé côté client via AJAX).
+    """
     data = request.get_json()
-
     pollution_type = data.get("pollution_type")
     quantity = float(data.get("quantity"))
 
@@ -50,25 +63,28 @@ def evaluate_severity():
     return jsonify({"severity": severity})
 
 
-# ✅ Route POST (JSON) : signalement via JavaScript (AJAX)
+# ✅ Route POST : API pour envoyer une notification complète (AJAX ou usage scripté)
 @report_bp.route("/send_notification", methods=["POST"])
 def send_notification():
+    """
+    Enregistre un signalement et envoie une notification complète via appel JSON.
+    """
     data = request.get_json()
     print("📨 Données reçues :", data)
 
     try:
-        # 🔁 Ajout dynamique de la date côté serveur
+        # ⏱️ Ajout de la date serveur (sécurité)
         data["created_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # 🧠 Calcul de la gravité via Strategy Pattern
+        # 🧠 Gravité calculée si non fournie
         evaluator = SeverityEvaluator()
         data["severity"] = evaluator.evaluate(
             data["pollution_type"],
             float(data["quantity"])
         )
 
-        # ✅ Insertion et notification centralisée via le service
-        service = NotificationService()
+        # 📨 Envoi via le service centralisé
+        service = NotificationService(channel=data.get("channel", "console"))
         service.send(data)
 
         return jsonify({"message": "✅ Signalement enregistré et notification envoyée."})

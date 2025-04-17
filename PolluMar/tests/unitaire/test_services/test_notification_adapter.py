@@ -1,9 +1,9 @@
+# 📁 tests/unitaire/test_services/test_notification_adapter.py
+
 import pytest
-from app.services.notification_adapter import (
-    ConsoleNotificationAdapter,
-    EmailNotificationAdapter,
-    SMSNotificationAdapter
-)
+from app.services.console_notification_adapter import ConsoleNotificationAdapter
+from app.services.email_notification_adapter import EmailNotificationAdapter
+from app.services.sms_notification_adapter import SMSNotificationAdapter
 
 VALID_DATA = {
     "name": "Jean Dupont",
