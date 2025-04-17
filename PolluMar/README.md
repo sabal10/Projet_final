@@ -61,7 +61,7 @@ python -m app
 | Tests unitaires  | Gravité, État, Observateurs  |
 | Tests intégration| Routes + Adaptateurs         |
 | Tests E2E        | Simulation complète utilisateur |
-| Couverture totale| **76 %**                     |
+| Couverture totale| **75 %**                     |
 
 ---
 
