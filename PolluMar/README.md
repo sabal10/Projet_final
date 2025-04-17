@@ -69,11 +69,11 @@ L’application suit une architecture **MVC modulaire** :
 ### 3. 🔔 Observer Pattern – Notification multiple
 
 - 📣 Notifie automatiquement plusieurs observateurs quand un signalement est modifié.
-- 🧹 Observateurs concrets : `ConsoleObserver`, `EmailObserver`, `AuditObserver`
-- 🧹 Sujet concret : `PollutionReportSubject`
+- 🧹 Observateurs : `ConsoleObserver`, `EmailObserver`, `AuditObserver`
+- 🧹 Sujet : `PollutionReportSubject`
 - 🧹 Interfaces : `Observer`, `Subject`
-- 🧹 Composant de regroupement : `IncidentObservers`
-- 📌 ![Diagramme Observer](./uml_patterns/ObserverPattern.png)
+- 🧹 Regroupement : `IncidentObservers`
+- 📌 ![Diagramme Observer](./uml_patterns/observer_pattern.png)
 
 ---
 
@@ -81,30 +81,44 @@ L’application suit une architecture **MVC modulaire** :
 
 - 🔁 Permet à un signalement de changer dynamiquement de comportement en fonction de son état.
 - 🧹 États : `EnAttenteState`, `ResoluState`
-- 🧹 Contexte : `Signalement`, `ReportContext`
+- 🧹 Contexte : `Signalement`
 - 📌 ![Diagramme State](./uml_patterns/state_pattern.png)
 
 ---
 
+### 5. 🧩 Adapter Pattern – Uniformisation des canaux de notification
 
-### 5.  Decorator Pattern – Journalisation d’exécution
-
--  Permet d’ajouter dynamiquement un comportement de **logging** sans modifier les fonctions existantes.
--  Appliqué notamment sur `NotificationService.send()` pour tracer les appels et retours.
--  Élément principal : `logging_decorator`
--  ![Diagramme Decorator](./uml_patterns/decorator_pattern.png)
+- 🔌 Permet d’unifier l’interface des canaux (console, email, SMS).
+- 🧹 Interfaces : `NotificationAdapter`
+- 🧹 Adaptateurs : `ConsoleNotificationAdapter`, `EmailNotificationAdapter`, `SMSNotificationAdapter`
+- 📌 ![Diagramme Adapter](./uml_patterns/adapter_pattern.png)
 
 ---
 
-### 6. 🧩 Adapter Pattern – Adaptation des formats de notification
+### 6. 🪶 Decorator Pattern – Journalisation d’exécution
 
-- 🔌 Permet d’uniformiser l’interface des différents canaux de notification (console, email, SMS) afin qu’ils soient utilisés de manière interchangeable par le service principal.
-- 🧹 Classes :
-  - `NotificationAdapter` (interface cible)
-  - `ConsoleNotificationAdapter`, `EmailNotificationAdapter`, `SMSNotificationAdapter` (adaptateurs concrets)
-  - `NotificationAdapterFactory` (utilisée aussi dans le Factory Method)
-- 🎯 Utilisé pour intégrer facilement de nouveaux canaux sans modifier le cœur du système.
-- 📌 ![Diagramme Adapter](./uml_patterns/adapter_pattern.png)
+- ➕ Ajoute dynamiquement un comportement de **logging** sans modifier les fonctions existantes.
+- 🧹 Élément principal : `logging_decorator`
+- 📌 ![Diagramme Decorator](./uml_patterns/decorator_pattern.png)
+
+---
+
+### 7. 🧠 Command Pattern – Encapsulation d’actions (send/resolve)
+
+- ⏯️ Encapsule les actions comme des objets commandes exécutables.
+- 🧹 Commandes : `SendNotificationCommand`, `ResolveReportCommand`
+- 🧹 Interface : `Command`
+- 🧹 Exécutant : `CommandInvoker`
+- 📌 ![Diagramme Command](./uml_patterns/command_pattern.png)
+
+---
+
+### 8. 🗃️ Singleton Pattern – Connexion unique à la base de données
+
+- 🔒 Assure qu’une seule instance de la classe `Database` soit utilisée dans tout le projet.
+- 🧹 Classe : `Database`
+- 📌 ![Diagramme Singleton](./uml_patterns/singleton_database.png)
+
 
 ---
 ## 🤪 Couverture des tests

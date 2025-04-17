@@ -7,7 +7,10 @@ manage_bp = Blueprint("manage", __name__)
 @manage_bp.route("/manage")
 def show_manage():
     db = Database()
-    rows = db.execute_query("SELECT * FROM reports")
+    
+    # ✅ Récupère uniquement les signalements à traiter (En attente)
+    rows = db.execute_query("SELECT * FROM reports WHERE status = 'En attente'")
+    
     reports = [dict(zip([col[0] for col in db.cursor.description], row)) for row in rows]
     return render_template("pages/manage.html", reports=reports)
 

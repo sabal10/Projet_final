@@ -10,19 +10,15 @@ def show_history():
 
     # 🔍 Récupération des filtres (optionnels)
     type_filter = request.args.get("type")
-    status_filter = request.args.get("status")
     severity_filter = request.args.get("severity")
 
-    # 🧱 Construction dynamique de la requête
-    base_query = "SELECT * FROM reports WHERE 1=1"
+    # 🧱 Construction dynamique de la requête (par défaut : incidents Résolus)
+    base_query = "SELECT * FROM reports WHERE status = 'Résolu'"
     params = []
 
     if type_filter:
         base_query += " AND pollution_type = ?"
         params.append(type_filter)
-    if status_filter:
-        base_query += " AND status = ?"
-        params.append(status_filter)
     if severity_filter:
         base_query += " AND severity = ?"
         params.append(severity_filter)

@@ -67,13 +67,18 @@ class NotificationService:
                 print(f"❌ Erreur lors de l’évaluation de la gravité : {e}")
                 data["severity"] = "Inconnue"  # Fallback sécurisé
 
-        # ✅ Insertion du signalement dans la base
+        # ✅ Valeurs par défaut si absentes
+        data["source"] = data.get("source", "formulaire")
+        data["status"] = data.get("status", "En attente")
+        data["channel"] = data.get("channel", "console")  # ✅ Sécurité ajoutée ici
+
+        # ✅ Insertion du signalement dans la base (incluant channel)
         db.execute_query("""
             INSERT INTO reports (
                 name, pollution_type, description, location, quantity,
                 severity, status, responder_name, responder_email,
-                created_at, resolved_at, comment
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL)
+                created_at, resolved_at, comment, source, channel
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, ?, ?)
         """, (
             data["name"],
             data["pollution_type"],
@@ -81,10 +86,12 @@ class NotificationService:
             data["location"],
             data["quantity"],
             data["severity"],
-            "En attente",
+            data["status"],
             data["responder_name"],
             data["responder_email"],
-            data["created_at"]
+            data["created_at"],
+            data["source"],
+            data["channel"]
         ))
 
         # ✅ Envoi de la notification via l’adaptateur (Factory)
