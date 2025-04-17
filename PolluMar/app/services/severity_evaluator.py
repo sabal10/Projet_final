@@ -1,17 +1,25 @@
-# Fichier : app/services/severity_evaluator.py
+# 📁 Fichier : app/services/severity_evaluator.py
 
 from app.services.severity_strategy_factory import SeverityStrategyFactory
+from app.utilities.logging_decorator import logging_decorator
 
-# 🎯 Cette classe utilise le design pattern Strategy via une factory
-# Elle ne contient plus de logique métier spécifique → elle délègue à la bonne stratégie
 class SeverityEvaluator:
+    """
+    🎯 Contexte du pattern Strategy : délègue l’évaluation de la gravité à une stratégie spécifique.
+    La logique métier est entièrement externalisée dans les stratégies.
+    """
+
+    @logging_decorator
     def evaluate(self, pollution_type: str, quantity: float) -> str:
-        # On obtient la stratégie correspondante via la factory
+        """
+        Évalue la gravité d’une pollution selon son type et sa quantité.
+        Utilise la factory pour sélectionner dynamiquement la stratégie appropriée.
+        """
         strategy = SeverityStrategyFactory.get_strategy(pollution_type)
 
-        # Si aucun type connu, on retourne "Inconnue"
+        # Aucune stratégie disponible pour ce type de pollution
         if strategy is None:
             return "Inconnue"
 
-        # Sinon, on utilise la stratégie sélectionnée
+        # Utilise la stratégie retournée pour effectuer l’analyse
         return strategy.evaluate(quantity)

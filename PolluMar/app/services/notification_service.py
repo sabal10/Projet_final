@@ -1,23 +1,29 @@
-# ✅ Fichier : app/services/notification_service.py
-
 from app.models.database import Database
-from app.services.notification_factory import NotificationAdapterFactory  # ✅ Import de la factory
+from app.services.notification_factory import NotificationAdapterFactory
+from app.services.severity_evaluator import SeverityEvaluator
+from app.utilities.logging_decorator import logging_decorator
 
 class NotificationService:
     """
     Service responsable de :
     - Vérifier les données du signalement
     - Détecter les doublons récents
+    - Évaluer la gravité si non précisée
     - Insérer le signalement dans la base
-    - Déléguer l'envoi via un adaptateur de notification (pattern Factory Method)
+    - Déléguer l'envoi via un adaptateur de notification (Factory Method)
     """
 
     def __init__(self, channel="console"):
-        # ✅ Instanciation dynamique de l'adaptateur via la factory
         self.adapter = NotificationAdapterFactory.create_adapter(channel)
 
+    @logging_decorator
     def send(self, data):
-        # ✅ Champs obligatoires requis
+        """
+        Envoie une notification après validation, détection de doublon,
+        évaluation automatique de la gravité (si absente), insertion en base,
+        puis notification via l’adaptateur.
+        """
+        # ✅ Vérification des champs obligatoires
         required_fields = [
             "name", "pollution_type", "description", "location",
             "quantity", "responder_name", "responder_email", "created_at"
@@ -29,7 +35,7 @@ class NotificationService:
 
         db = Database()
 
-        # 🔍 Vérification de doublon : un signalement identique récemment soumis
+        # 🔍 Vérification de doublon récent
         existing = db.execute_query("""
             SELECT * FROM reports
             WHERE name = ? AND pollution_type = ? AND location = ?
@@ -47,10 +53,19 @@ class NotificationService:
 
         if existing:
             print("⚠️ Doublon détecté : ce signalement existe déjà récemment.")
-            return  # ⛔ Ne pas réinsérer
+            return "Doublon détecté"
 
-        # ✅ Gravité : si elle n’a pas été évaluée, on met "Inconnue"
-        severity = data.get("severity", "Inconnue")
+        # ✅ Gravité automatique si absente ou inconnue
+        if "severity" not in data or data["severity"] == "Inconnue":
+            evaluator = SeverityEvaluator()
+            try:
+                data["severity"] = evaluator.evaluate(
+                    data["pollution_type"],
+                    float(data["quantity"])
+                )
+            except Exception as e:
+                print(f"❌ Erreur lors de l’évaluation de la gravité : {e}")
+                data["severity"] = "Inconnue"  # Fallback sécurisé
 
         # ✅ Insertion du signalement dans la base
         db.execute_query("""
@@ -65,12 +80,14 @@ class NotificationService:
             data["description"],
             data["location"],
             data["quantity"],
-            severity,
+            data["severity"],
             "En attente",
             data["responder_name"],
             data["responder_email"],
             data["created_at"]
         ))
 
-        # ✅ Utilisation de l'adaptateur (dynamique via factory)
+        # ✅ Envoi de la notification via l’adaptateur (Factory)
         self.adapter.send(data)
+
+        return "Notification envoyée"
