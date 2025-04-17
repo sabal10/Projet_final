@@ -25,3 +25,7 @@ __pycache__/
 *.swp
 .DS_Store
 Thumbs.db
+# Fichiers de test à ignorer
+.coverage
+/out/
+/../out/
